@@ -1,0 +1,81 @@
+# Asistente Inteligente para Gestión de Consorcios
+
+## Descripción
+Sistema de automatización desarrollado en n8n para centralizar la atención
+de propietarios e inquilinos de un edificio mediante Telegram.
+
+El sistema identifica al usuario utilizando Airtable, interpreta el mensaje
+mediante OpenAI y lo deriva automáticamente a uno de cuatro procesos:
+
+- Reclamos
+- Consultas
+- Reservas del SUM
+- Fallback / derivación manual
+
+## Tecnologías utilizadas
+
+- n8n — Orquestador
+- Airtable — Base de datos y memoria
+- OpenAI — Clasificación e interpretación de lenguaje natural
+- Telegram — Canal de interacción con usuarios y alertas críticas
+- Slack — Canal interno de Administración
+
+## Funcionalidades
+
+### Reclamos
+- Clasificación automática.
+- Registro en Airtable.
+- Identificación de criticidad.
+- Aviso por Slack.
+- Alertas críticas al responsable por Telegram.
+- Confirmación al usuario.
+
+### Consultas
+- Extracción de palabras clave mediante IA.
+- Matching determinístico contra la base de conocimiento.
+- Respuesta automática.
+- Derivación a Administración cuando no existe respuesta.
+
+### Reserva del SUM
+- Extracción de fecha y horario.
+- Consulta de reservas vigentes.
+- Detección de solapamientos.
+- Creación automática de reservas.
+- Aviso ante conflictos.
+
+### Control de usuarios
+Los usuarios son identificados mediante su Telegram ID.
+Los usuarios no registrados son derivados a Administración para realizar
+el proceso de alta.
+
+## Arquitectura
+
+[Ver diagrama de arquitectura](docs/01-arquitectura.pdf)
+
+## Base de datos
+
+[Ver estructura de datos](docs/02-estructura-datos.pdf)
+
+## Optimización de costos
+
+[Ver análisis](docs/03-optimizacion-costos.pdf)
+
+## Seguridad y resiliencia
+
+[Ver documentación](docs/04-seguridad-resiliencia.pdf)
+
+## Dashboard
+
+[Ver dashboard](docs/05-dashboard.md)
+
+## Workflow
+
+[Workflow n8n](workflow/asistente-consorcio-n8n.json)
+
+## Evidencias
+
+Las capturas de las pruebas realizadas se encuentran en `/evidencias`.
+
+## Autor
+
+Alexis V.
