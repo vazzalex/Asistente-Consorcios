@@ -1,0 +1,2252 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        640
+      ],
+      "id": "688221d5-29f2-4de7-9c07-479de0a5f5ab",
+      "name": "Telegram Trigger",
+      "webhookId": "84d7a6f5-b92c-4a23-9323-7c83852e9b40",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "08fdabda-7436-4568-915f-94d093316223",
+              "name": "event_id",
+              "value": "={{ 'tg_' + $json.message.chat.id + '_' + $json.message.message_id }}",
+              "type": "string"
+            },
+            {
+              "id": "61fe66e7-452d-49dc-835e-d21b2438d078",
+              "name": "canal",
+              "value": "telegram",
+              "type": "string"
+            },
+            {
+              "id": "349ef19c-b8d1-4875-8b0a-b95fa45e3f7f",
+              "name": "telegram_user_id",
+              "value": "={{ $json.message.from.id }}",
+              "type": "number"
+            },
+            {
+              "id": "c0d69dab-5537-4db2-b368-d30e54b05236",
+              "name": "chat_id",
+              "value": "={{ String($json.message.chat.id) }}",
+              "type": "string"
+            },
+            {
+              "id": "492a09cb-e9ca-460a-a06b-2e5985c986a7",
+              "name": "nombre",
+              "value": "={{ $json.message.from.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "884cde6c-a0bd-49cc-8535-1478c8c9f534",
+              "name": "mensaje",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "f94901ed-d321-4e5b-81c1-2469533edb11",
+              "name": "timestamp",
+              "value": "={{ $json.message.date }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        640
+      ],
+      "id": "04a35c73-8eec-43e4-b4fa-bcb5ee41f88b",
+      "name": "Normalizar  Telegram"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app7kEZvK4NxMj5Mc",
+          "mode": "list",
+          "cachedResultName": "Airtable.xlsx",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl7NKZ7qXYh5JgN7",
+          "mode": "list",
+          "cachedResultName": "Usuarios",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc/tbl7NKZ7qXYh5JgN7"
+        },
+        "filterByFormula": "={telefono} = '{{$json.telegram_user_id}}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        640
+      ],
+      "id": "2f7e7c89-7456-4da8-8063-7b22dcc07a78",
+      "name": "Buscard ID Usuario",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "C2DlRk2g1sEJCKgL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "app7kEZvK4NxMj5Mc",
+          "mode": "list",
+          "cachedResultName": "Airtable.xlsx",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblcQ8mEbxG2FQJyY",
+          "mode": "list",
+          "cachedResultName": "Unidades",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc/tblcQ8mEbxG2FQJyY"
+        },
+        "id": "={{ $json.fields.unidad[0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        544
+      ],
+      "id": "b2c4e030-629f-406f-ac74-fa96ecbf567f",
+      "name": "Obtener ID Unidad",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "C2DlRk2g1sEJCKgL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "59c9bdd8-84cf-4935-9a25-c4ece5bbc8d9",
+              "name": "event_id",
+              "value": "={{ $('Normalizar  Telegram').item.json.event_id }}",
+              "type": "string"
+            },
+            {
+              "id": "62478893-5014-429b-8509-2b3ffd853204",
+              "name": "usuario_id",
+              "value": "={{ $('Buscard ID Usuario').item.json.fields.id_usuario }}",
+              "type": "string"
+            },
+            {
+              "id": "15015b96-2f9b-4dbf-a152-42068e08ef80",
+              "name": "nombre",
+              "value": "={{ $('Buscard ID Usuario').item.json.fields.nombre }}",
+              "type": "string"
+            },
+            {
+              "id": "48175814-5bf7-4cf1-ace6-fd1619ca58c6",
+              "name": "unidad_id",
+              "value": "={{ $json.fields.id_unidad }}",
+              "type": "string"
+            },
+            {
+              "id": "457dc6df-f4bf-4d30-981d-cd7cd8258017",
+              "name": "unidad",
+              "value": "={{ $json.fields.unidad }}",
+              "type": "string"
+            },
+            {
+              "id": "58929bfe-028e-45a5-90d2-11573ed85837",
+              "name": "mensaje",
+              "value": "={{ $('Normalizar  Telegram').item.json.mensaje }}",
+              "type": "string"
+            },
+            {
+              "id": "c2c3fa9d-ada2-4478-afb4-1a5cc3ad8d20",
+              "name": "chat_id",
+              "value": "={{ $('Normalizar  Telegram').item.json.chat_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1120,
+        544
+      ],
+      "id": "60521363-7b72-4d95-af39-07c4bd945d1f",
+      "name": "Preparar datos para IA"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eeff64de-bfc3-4a15-ac76-3a6179dfc589",
+              "name": "intencion",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).intencion }}",
+              "type": "string"
+            },
+            {
+              "id": "1abde6b9-6a3c-414f-9948-84b234c1abde",
+              "name": "categoria",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).categoria }}",
+              "type": "string"
+            },
+            {
+              "id": "09c67068-663c-4c01-a3a6-fc2c055778ca",
+              "name": "prioridad",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).prioridad }}",
+              "type": "string"
+            },
+            {
+              "id": "f0441837-38bb-4138-8e1c-b0efc7b1c7e3",
+              "name": "critico",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).critico }}",
+              "type": "string"
+            },
+            {
+              "id": "0443ba1d-1a71-41de-b757-7534bd0fd533",
+              "name": "resumen",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).resumen }}",
+              "type": "string"
+            },
+            {
+              "id": "7df96fee-c8f7-4ffb-8bd0-2f29a75f07fa",
+              "name": "fecha_reserva",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).reserva.fecha }}",
+              "type": "string"
+            },
+            {
+              "id": "5d6a6c84-f8e9-464b-85b9-137895c9ef70",
+              "name": "hora_inicio",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).reserva.hora_inicio }}",
+              "type": "string"
+            },
+            {
+              "id": "c2fb89f1-763c-49cb-b293-d36bd352cf87",
+              "name": "hora_fin",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).reserva.hora_fin }}",
+              "type": "string"
+            },
+            {
+              "id": "c24253a4-8fa4-4330-adb5-ffd93c9e0da1",
+              "name": "datos_completos_reserva",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).reserva.datos_completos }}",
+              "type": "string"
+            },
+            {
+              "id": "9c74a274-191b-41c8-abca-155ab834ab78",
+              "name": "palabras_clave",
+              "value": "={{ JSON.parse($json.output[0].content[0].text).palabras_clave }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1696,
+        352
+      ],
+      "id": "31356de5-99ad-4941-839a-2dc2ad97763b",
+      "name": "Parsear clasificación"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.intencion }}",
+                    "rightValue": "consulta",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "2651ac2f-a8b8-43ee-8864-68a401aabc5d"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b1ad2d87-60aa-4182-b44a-5bb25c41f70e",
+                    "leftValue": "={{ $json.intencion }}",
+                    "rightValue": "reserva_sum",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "630a6feb-b2b5-4c63-86ad-5a51336e836f",
+                    "leftValue": "={{ $json.intencion }}",
+                    "rightValue": "reclamo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1920,
+        320
+      ],
+      "id": "fb0e6e80-f8c0-452a-9eba-54d4c05218a0",
+      "name": "Clasificador"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app7kEZvK4NxMj5Mc",
+          "mode": "list",
+          "cachedResultName": "Airtable.xlsx",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblUkSJBFO0wqLKUZ",
+          "mode": "list",
+          "cachedResultName": "Reclamos",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc/tblUkSJBFO0wqLKUZ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "critico": "={{ $('Parsear clasificación').item.json.critico }}",
+            "id_reclamo": "={{ 'REC-' + $now.toFormat('yyyyMMdd-HHmmss') }}",
+            "unidad": "={{ [ $('Obtener ID Unidad').item.json.id ] }}",
+            "usuario": "={{ [$('Buscard ID Usuario').item.json.id ] }}",
+            "mensaje_original": "={{ $('Normalizar  Telegram').item.json.mensaje }}",
+            "fecha_recepcion": "={{ $now.toISO() }}",
+            "categoria": "={{ $('Parsear clasificación').item.json.categoria }}",
+            "resumen_ia": "={{ $('Parsear clasificación').item.json.resumen }}",
+            "prioridad": "={{ $('Parsear clasificación').item.json.prioridad }}",
+            "responsable": "Administración",
+            "estado": "recibido"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_reclamo",
+              "displayName": "id_reclamo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "unidad",
+              "displayName": "unidad",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "usuario",
+              "displayName": "usuario",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_recepcion",
+              "displayName": "fecha_recepcion",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mensaje_original",
+              "displayName": "mensaje_original",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "categoria",
+              "displayName": "categoria",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "resumen_ia",
+              "displayName": "resumen_ia",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "critico",
+              "displayName": "critico",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "responsable",
+              "displayName": "responsable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Administración",
+                  "value": "Administración"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_cierre",
+              "displayName": "fecha_cierre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2144,
+        544
+      ],
+      "id": "1e92a094-a4d8-4a47-9e99-4063a9d975cc",
+      "name": "Crear reclamo",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "C2DlRk2g1sEJCKgL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c89f120f-157c-4965-acf4-5381b170299c",
+              "leftValue": "={{ $('Parsear clasificación').item.json.critico }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2368,
+        544
+      ],
+      "id": "dc5f864c-73d0-41f1-bd6b-909b53289abb",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app7kEZvK4NxMj5Mc",
+          "mode": "list",
+          "cachedResultName": "Airtable.xlsx",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbldTbcHCmzNFWxhV",
+          "mode": "list",
+          "cachedResultName": "Conocimiento",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc/tbldTbcHCmzNFWxhV"
+        },
+        "filterByFormula": "{vigente} = 1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2144,
+        -224
+      ],
+      "id": "219c41f3-1d67-462a-b641-75c452ec80d6",
+      "name": "Buscar respuesta",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "C2DlRk2g1sEJCKgL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cf9cbee5-a2b1-4e1f-b838-0a363316ecb1",
+              "leftValue": "={{ $json.encontrado }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2592,
+        -224
+      ],
+      "id": "71e927fb-0d0f-4c01-a4e6-28c0c895a52b",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "={{ $json.respuesta }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2816,
+        -320
+      ],
+      "id": "a5566d3f-0070-4db0-82f6-ea07d9f94e27",
+      "name": "Send a text message1",
+      "webhookId": "ced11858-c678-4e89-ae1f-d1d74a407985",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "No pude encontrar información suficiente para responder tu consulta con seguridad.  Voy a derivarla a un asesor de Administración para que pueda revisarla y darte una respuesta.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2816,
+        -128
+      ],
+      "id": "a2690c65-f7b8-442b-9655-db9e97ba0d16",
+      "name": "Send a text message2",
+      "webhookId": "053df3c2-b6a2-4728-877d-b355527619b8",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BP5VDA17D",
+          "mode": "id"
+        },
+        "text": "=Consulta sin respuesta automática  Unidad: {{ $('Preparar datos para IA').item.json.unidad }} Usuario: {{ $('Preparar datos para IA').item.json.nombre }}  Consulta: {{ $('Preparar datos para IA').item.json.mensaje }}  El asistente no encontró información suficiente en la base de conocimiento. Se requiere revisión de Administración.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.6,
+      "position": [
+        3040,
+        -128
+      ],
+      "id": "f1bb4d21-6f9d-4c40-9b14-f2116df112f6",
+      "name": "Send a message2",
+      "webhookId": "eb04cf3f-96a3-4c43-95fd-ec2491eba8e6",
+      "credentials": {
+        "slackApi": {
+          "id": "uAylTDhv00hi1C2A",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "558938d4-25b8-4224-a9d7-d32fd2b00393",
+              "leftValue": "={{ $json.datos_completos_reserva }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2144,
+        256
+      ],
+      "id": "a3281fdf-29d2-458e-acfa-0e5eaa48651d",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "447727ad-9eaf-4c70-a460-7a3e24c1a3a0",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2592,
+        160
+      ],
+      "id": "2f6be5d3-e755-4c32-b9b1-1647e5b8cca5",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app7kEZvK4NxMj5Mc",
+          "mode": "list",
+          "cachedResultName": "Airtable.xlsx",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblsXW4ZAE8cCbzMF",
+          "mode": "list",
+          "cachedResultName": "Reservas",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc/tblsXW4ZAE8cCbzMF"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_reserva": "={{ 'RES-' + $now.toFormat('yyyyMMdd-HHmmss') }}",
+            "unidad": "={{ [ $('Obtener ID Unidad').item.json.id ] }}",
+            "usuario": "={{ [$('Buscard ID Usuario').item.json.id ]}}",
+            "fecha": "={{ $('Parsear clasificación').item.json.fecha_reserva }}",
+            "hora_inicio": "={{ $('Parsear clasificación').item.json.hora_inicio }}",
+            "hora_fin": "={{ $('Parsear clasificación').item.json.hora_fin }}",
+            "estado": "Confirmada",
+            "fecha_solicitud": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_reserva",
+              "displayName": "id_reserva",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "unidad",
+              "displayName": "unidad",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "usuario",
+              "displayName": "usuario",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "hora_inicio",
+              "displayName": "hora_inicio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "hora_fin",
+              "displayName": "hora_fin",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_solicitud",
+              "displayName": "fecha_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2816,
+        256
+      ],
+      "id": "6cf0d0b7-c000-4f0d-988e-87c2a431917c",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "C2DlRk2g1sEJCKgL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const horaSolicitadaInicio = $('Parsear clasificación').first().json.hora_inicio;\nconst horaSolicitadaFin = $('Parsear clasificación').first().json.hora_fin;\n\nconst toMinutes = (hora) => {\n  const [h, m] = hora.split(':').map(Number);\n  return h * 60 + m;\n};\n\nconst inicioSolicitado = toMinutes(horaSolicitadaInicio);\nconst finSolicitado = toMinutes(horaSolicitadaFin);\n\nlet conflicto = false;\nlet reservaConflicto = null;\n\nfor (const item of $input.all()) {\n  const reserva = item.json.fields;\n\n  if (!reserva?.hora_inicio || !reserva?.hora_fin) continue;\n\n  const inicioExistente = toMinutes(reserva.hora_inicio);\n  const finExistente = toMinutes(reserva.hora_fin);\n\n  if (\n    inicioSolicitado < finExistente &&\n    finSolicitado > inicioExistente\n  ) {\n    conflicto = true;\n    reservaConflicto = reserva.id_reserva || null;\n    break;\n  }\n}\n\nreturn [\n  {\n    json: {\n      disponible: !conflicto,\n      conflicto,\n      reserva_conflicto: reservaConflicto\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2816,
+        64
+      ],
+      "id": "711e892f-2f7a-4407-88c4-e9b465fae011",
+      "name": "Validar disponibilidad"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0daf973d-6880-4fce-8c9a-26df6b364335",
+              "leftValue": "={{ $json.disponible }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3040,
+        64
+      ],
+      "id": "3c9e88a6-ebf4-4ac7-bfab-5fd0afe4e772",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app7kEZvK4NxMj5Mc",
+          "mode": "list",
+          "cachedResultName": "Airtable.xlsx",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblsXW4ZAE8cCbzMF",
+          "mode": "list",
+          "cachedResultName": "Reservas",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc/tblsXW4ZAE8cCbzMF"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_reserva": "={{ 'RES-' + $now.toFormat('yyyyMMdd-HHmmss') }}",
+            "unidad": "={{ [ $('Obtener ID Unidad').item.json.id ] }}",
+            "usuario": "={{ $('Buscard ID Usuario').item.json.id }}",
+            "fecha": "={{ $('Clean reserva').item.json.fecha }}",
+            "hora_inicio": "={{ $('Clean reserva').item.json.hora_inicio }}",
+            "hora_fin": "={{ $('Clean reserva').item.json.hora_fin }}",
+            "estado": "Confirmada",
+            "fecha_solicitud": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_reserva",
+              "displayName": "id_reserva",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "unidad",
+              "displayName": "unidad",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "usuario",
+              "displayName": "usuario",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "hora_inicio",
+              "displayName": "hora_inicio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "hora_fin",
+              "displayName": "hora_fin",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_solicitud",
+              "displayName": "fecha_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        3264,
+        -32
+      ],
+      "id": "50b0f5b2-f2e1-472f-b1b3-f8ac8440dd45",
+      "name": "Create a record1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "C2DlRk2g1sEJCKgL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "=✅ Tu reserva del SUM fue confirmada.  Fecha: {{ $('Clean reserva').item.json.fecha }} Horario: {{ $('Clean reserva').item.json.hora_inicio }} a {{ $('Clean reserva').item.json.hora_fin }} ",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3488,
+        -32
+      ],
+      "id": "3c8fb682-156c-447f-baf6-eeabaa4cb007",
+      "name": "Send a text message6",
+      "webhookId": "db1ee19d-dacd-4f40-9b68-decc85129721",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "=❌ El horario solicitado para el SUM no se encuentra disponible.  📅 Fecha: {{ $('Parsear clasificación').item.json.fecha_reserva }} 🕒 Horario solicitado: {{ $('Parsear clasificación').item.json.hora_inicio }} a {{ $('Parsear clasificación').item.json.hora_fin }}  \nPor favor, indicá otro horario para esa fecha.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3264,
+        160
+      ],
+      "id": "a6656116-3129-48af-9ab6-9cf8fb1072bc",
+      "name": "Send a text message7",
+      "webhookId": "3ce72c92-c4ac-48a6-8b17-7f54d91bd393",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let rawKeywords = $('Parsear clasificación').first().json.palabras_clave;\n\n// Si viene como texto JSON, convertirlo a Array\nif (typeof rawKeywords === 'string') {\n  try {\n    rawKeywords = JSON.parse(rawKeywords);\n  } catch {\n    rawKeywords = [];\n  }\n}\n\nconst keywords = Array.isArray(rawKeywords)\n  ? rawKeywords\n      .map(k => String(k).toLowerCase().trim())\n      .filter(Boolean)\n  : [];\n\nconst registros = $input.all();\n\nlet mejorMatch = null;\nlet mejorScore = 0;\n\nfor (const item of registros) {\n  const f = item.json.fields ?? item.json;\n\n  const categoria = String(f.categoria ?? '').toLowerCase();\n  const tema = String(f.tema ?? '').toLowerCase();\n  const contenido = String(f.contenido ?? '').toLowerCase();\n\n  let score = 0;\n\n  for (const keyword of keywords) {\n    if (categoria.includes(keyword)) {\n      score += 2;\n    }\n\n    if (tema.includes(keyword)) {\n      score += 2;\n    }\n\n    if (contenido.includes(keyword)) {\n      score += 1;\n    }\n  }\n\n  if (score > mejorScore) {\n    mejorScore = score;\n    mejorMatch = f;\n  }\n}\n\nconst encontrado = mejorScore >= 2;\n\nreturn [\n  {\n    json: {\n      encontrado,\n      score: mejorScore,\n      respuesta: encontrado ? (mejorMatch?.contenido ?? null) : null,\n      categoria: encontrado ? (mejorMatch?.categoria ?? null) : null,\n      tema: encontrado ? (mejorMatch?.tema ?? null) : null,\n      palabras_clave: keywords\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2368,
+        -224
+      ],
+      "id": "8909b1dc-8969-40dd-85ca-7f2798d10f9a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "GPT-5-NANO"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Sos un clasificador y extractor de datos para la administración de un consorcio.\n\nTu función es analizar el mensaje recibido y devolver únicamente un JSON estructurado.\n\nLas únicas intenciones permitidas son:\n- reclamo\n- reserva_sum\n- consulta\n- fallback\n\nREGLAS GENERALES\n- No inventes información.\n- Usá únicamente datos explícitos o inferibles de forma razonable a partir del mensaje y de la fecha actual proporcionada.\n- Si no podés identificar claramente una de las tres intenciones principales, usá \"fallback\".\n- Respondé exclusivamente con JSON válido.\n- No agregues explicaciones fuera del JSON.\n- Mantené los textos breves para minimizar tokens.\n\n--------------------------------------------------\n1. RECLAMOS\n--------------------------------------------------\n\nClasificá como \"reclamo\" cuando el usuario informa un problema, desperfecto, mantenimiento, incidente o situación que requiere seguimiento de Administración.\n\nSi la intención es \"reclamo\", identificá:\n\n- categoria\n- prioridad\n- critico\n- resumen\n\nEl campo \"prioridad\" DEBE contener exactamente uno de estos cuatro valores:\n- \"baja\"\n- \"media\"\n- \"alta\"\n- \"critica\"\n\nNo utilices sinónimos, traducciones ni otros valores.\nPor ejemplo:\n- No uses \"critical\"\n- No uses \"crítico\"\n- No uses \"urgente\"\n- No uses \"high\"\n\nSi existe riesgo inmediato, utilizá exactamente:\n\"prioridad\": \"critica\"\n\n\"critico\" debe ser booleano: true o false.\n\nConsiderá crítico un reclamo cuando pueda existir riesgo inmediato para personas o bienes, por ejemplo:\n- olor o pérdida de gas\n- incendio o humo\n- riesgo eléctrico\n- inundación importante\n- desperfecto grave de ascensor\n- problemas de seguridad o ingreso no autorizado\n- cualquier situación que implique peligro inmediato\n\nUn reclamo puede tener prioridad alta y no ser crítico.\n\nEjemplo:\n\"Hay una pérdida de agua debajo de la pileta\"\n→ prioridad alta o media según contexto\n→ critico false\n\n--------------------------------------------------\n2. RESERVA DEL SUM\n--------------------------------------------------\n\nClasificá como \"reserva_sum\" cuando el usuario quiere reservar, consultar disponibilidad o solicitar el SUM.\n\nSi la intención es \"reserva_sum\", extraé:\n\n- fecha\n- hora_inicio\n- hora_fin\n- datos_completos\n- campo_faltante\n\nLa fecha actual será proporcionada en el mensaje del usuario.\n\nReglas:\n- Interpretá fechas en lenguaje natural.\n- Si el usuario indica día y mes pero no año, utilizá la próxima ocurrencia futura de esa fecha.\n- Si dice expresiones como \"mañana\", \"este viernes\" o similares, interpretalas usando la fecha actual proporcionada.\n- Usá formato YYYY-MM-DD para fecha.\n- Usá formato HH:mm para horarios.\n- No inventes datos faltantes.\n- Si falta fecha, hora_inicio o hora_fin, devolvé null para ese campo.\n- \"datos_completos\" debe ser true solamente si fecha, hora_inicio y hora_fin tienen valor.\n- \"campo_faltante\" debe indicar qué dato falta.\n- Si faltan varios datos, podés devolver una lista separada por comas.\n\nEjemplo:\n\"Quiero reservar el SUM el viernes 14 de agosto de 22 a 23\"\n→ fecha: \"2026-08-14\"\n→ hora_inicio: \"22:00\"\n→ hora_fin: \"23:00\"\n→ datos_completos: true\n\n--------------------------------------------------\n3. CONSULTAS\n--------------------------------------------------\n\nClasificá como \"consulta\" cuando el usuario solicita información sobre normas, horarios, procedimientos, convivencia, uso del SUM u otra información administrativa.\n\nSi la intención es \"consulta\":\n\n- generá entre 1 y 4 palabras clave útiles para buscar la respuesta en una base de conocimiento.\n- Las palabras clave deben representar conceptos concretos presentes en la consulta.\n- Evitá palabras genéricas como \"quiero\", \"puedo\", \"consulta\", \"saber\".\n- Preferí términos que puedan coincidir con categorías o temas de la base.\n\nEjemplos:\n\n\"¿Hasta qué hora puedo usar el SUM?\"\n→ [\"SUM\", \"horario\"]\n\n\"¿Puedo hacer una mudanza un domingo?\"\n→ [\"mudanza\", \"domingo\"]\n\n\"¿A qué hora puedo sacar la basura?\"\n→ [\"residuos\", \"horario\"]\n\nNo respondas la consulta.\nTu función es únicamente clasificarla y extraer palabras clave para que n8n realice la búsqueda posteriormente.\n\n--------------------------------------------------\n4. FALLBACK\n--------------------------------------------------\n\nUsá \"fallback\" cuando:\n- el mensaje no corresponde claramente a reclamo, reserva o consulta;\n- el mensaje es incomprensible;\n- falta contexto suficiente para clasificarlo.\n\n--------------------------------------------------\nESTRUCTURA DE SALIDA\n--------------------------------------------------\n\nRespondé SIEMPRE utilizando exactamente esta estructura:\n\n{\n  \"intencion\": \"reclamo | reserva_sum | consulta | fallback\",\n  \"categoria\": null,\n  \"prioridad\": null,\n  \"critico\": false,\n  \"resumen\": \"\",\n  \"palabras_clave\": [],\n  \"reserva\": {\n    \"fecha\": null,\n    \"hora_inicio\": null,\n    \"hora_fin\": null,\n    \"datos_completos\": false,\n    \"campo_faltante\": null\n  }\n}\n\nReglas de estructura:\n\n- Para \"reclamo\":\n  completar categoria, prioridad, critico y resumen.\n  palabras_clave debe ser [].\n  reserva debe conservar sus valores null/false.\n\n- Para \"consulta\":\n  completar resumen y palabras_clave.\n  categoria y prioridad deben ser null.\n  critico debe ser false.\n  reserva debe conservar sus valores null/false.\n\n- Para \"reserva_sum\":\n  completar resumen y todos los campos posibles dentro de reserva.\n  palabras_clave debe ser [].\n  categoria y prioridad deben ser null.\n  critico debe ser false.\n\n- Para \"fallback\":\n  resumen debe explicar brevemente por qué no pudo clasificarse.\n  palabras_clave debe ser [].\n  categoria y prioridad deben ser null.\n  critico debe ser false.\n  reserva debe conservar sus valores null/false.\n\nIMPORTANTE:\nLos valores enumerados son cerrados y deben respetarse exactamente.\n\nintencion:\n\"reclamo\" | \"reserva_sum\" | \"consulta\" | \"fallback\"\n\nprioridad:\n\"baja\" | \"media\" | \"alta\" | \"critica\" | null"
+            },
+            {
+              "content": "=Fecha actual:\n{{ $now.toFormat('yyyy-MM-dd') }}\n\nUsuario:\n{{ $json.nombre }}\n\nUnidad:\n{{ $json.unidad }}\n\nMensaje:\n{{ $json.mensaje }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 500,
+          "reasoning": {
+            "reasoningOptions": {
+              "effort": "low"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1344,
+        544
+      ],
+      "id": "0871ff36-8480-404e-9d77-a459964c0180",
+      "name": "Clasificador1",
+      "credentials": {
+        "openAiApi": {
+          "id": "aW6rLRT4KYCUQChZ",
+          "name": "n8n free OpenAI API credits"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e4fa4a96-68a6-449a-b00b-2f5cc8f8c7fd",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        640
+      ],
+      "id": "7992d70e-ed75-4a0b-81d1-e7308ad547bc",
+      "name": "Verificar Usuario"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "=No pude identificar tu usuario dentro de los registros del edificio.  \nPara solicitar el alta, por favor contactate con Administración por correo electrónico y solicitá el formulario de registro. Una vez completado el alta, vas a poder utilizar el asistente.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        736
+      ],
+      "id": "22d8dda7-e72d-41d0-9a8c-3455ee77a4c7",
+      "name": "Usuario no encontrado",
+      "webhookId": "ec4e738a-d9db-4e82-b6f0-c5cc9d56fd80",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app7kEZvK4NxMj5Mc",
+          "mode": "list",
+          "cachedResultName": "Airtable.xlsx",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl2T1F9XMWlddgDm",
+          "mode": "list",
+          "cachedResultName": "Logs",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc/tbl2T1F9XMWlddgDm"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "requiere_revision": true,
+            "id_evento": "={{ 'ERR-' + $now.toFormat('yyyyMMdd-HHmmss') }}",
+            "timestamp": "={{ $now.toISO() }}",
+            "workflow": "Clasificacion_IA",
+            "tipo_evento": "Error API",
+            "canal_origen": "=Telegram",
+            "id_externo": "={{ $('Normalizar  Telegram').item.json.event_id }}",
+            "resultado": "Error",
+            "error_message": "={{ $json.error?.message || $json.message || 'Error no identificado' }}",
+            "error_code": 0
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_evento",
+              "displayName": "id_evento",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "workflow",
+              "displayName": "workflow",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Gestion_Reclamos",
+                  "value": "Gestion_Reclamos"
+                },
+                {
+                  "name": "Reserva_SUM",
+                  "value": "Reserva_SUM"
+                },
+                {
+                  "name": "Validacion_Pagos",
+                  "value": "Validacion_Pagos"
+                },
+                {
+                  "name": "Clasificacion_IA",
+                  "value": "Clasificacion_IA"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tipo_evento",
+              "displayName": "tipo_evento",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "canal_origen",
+              "displayName": "canal_origen",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "WhatsApp",
+                  "value": "WhatsApp"
+                },
+                {
+                  "name": "Gmail",
+                  "value": "Gmail"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "unidad",
+              "displayName": "unidad",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "resultado",
+              "displayName": "resultado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Exitoso",
+                  "value": "Exitoso"
+                },
+                {
+                  "name": "Derivado",
+                  "value": "Derivado"
+                },
+                {
+                  "name": "Error",
+                  "value": "Error"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error_code",
+              "displayName": "error_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "requiere_revision",
+              "displayName": "requiere_revision",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1696,
+        928
+      ],
+      "id": "b55e5e86-124b-4eae-a2b7-e5f798d9ec04",
+      "name": "Log de errores",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "C2DlRk2g1sEJCKgL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BPH9LDPV3",
+          "mode": "id"
+        },
+        "text": "=⚠️ Error en automatización  Workflow: Asistente Consorcio Nodo: Clasificador OpenAI Usuario: {{ $('Preparar datos para IA').item.json.nombre }} Unidad: {{ $('Preparar datos para IA').item.json.unidad }}  Error: {{ $json.error?.message || $json.message || 'Error no identificado' }}  La ejecución fue derivada para revisión.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.6,
+      "position": [
+        1920,
+        928
+      ],
+      "id": "d6f7eb05-7556-4e01-ba0c-5fcf9fc4a404",
+      "name": "Slack de error",
+      "webhookId": "00738931-28b2-4d53-a3c6-07d696bbff8a",
+      "credentials": {
+        "slackApi": {
+          "id": "uAylTDhv00hi1C2A",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "No pude procesar tu solicitud en este momento.  Tu mensaje fue derivado a Administración para su revisión.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2144,
+        928
+      ],
+      "id": "f7e5b3da-02b1-40c8-9a48-8728d1922f71",
+      "name": "Mensaje sistema no disponible",
+      "webhookId": "f743ddab-f3f3-4ecc-b558-71d90c7fe4d8",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "No pude identificar correctamente tu solicitud.  Voy a derivarla a Administración para que puedan revisarla.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2144,
+        736
+      ],
+      "id": "6e0262c0-0145-4d0c-aec9-db69510fb2fb",
+      "name": "Fallback texto",
+      "webhookId": "3fb54419-57ca-402a-9f83-b1f440ad85c7",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BP5VDA17D",
+          "mode": "id"
+        },
+        "text": "=Mensaje no identificado por el asistente  Unidad: {{ $('Preparar datos para IA').item.json.unidad }} Usuario: {{ $('Preparar datos para IA').item.json.nombre }}  Mensaje: {{ $('Preparar datos para IA').item.json.mensaje }}  La intención no pudo clasificarse automáticamente. Se requiere revisión de Administración.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.6,
+      "position": [
+        2368,
+        736
+      ],
+      "id": "ab870a66-3f04-406c-9908-033567f0567b",
+      "name": "Aviso Fallback",
+      "webhookId": "02793544-7ecb-45ae-bcd3-a2a147ec9c30",
+      "credentials": {
+        "slackApi": {
+          "id": "uAylTDhv00hi1C2A",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BQ6DERRSL",
+          "mode": "id"
+        },
+        "text": "=🚨 RECLAMO CRÍTICO  Unidad: {{ $('Preparar datos para IA').item.json.unidad }} Usuario: {{ $('Preparar datos para IA').item.json.nombre }} Categoría: {{ $('Parsear clasificación').item.json.categoria }} Prioridad: {{ $('Parsear clasificación').item.json.prioridad }}  Descripción: {{ $('Parsear clasificación').item.json.resumen }}  ID Reclamo: {{ $('Crear reclamo').item.json.fields.id_reclamo }}  ⚠️ Requiere atención prioritaria.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.6,
+      "position": [
+        2592,
+        448
+      ],
+      "id": "61ab6294-a3e1-4878-8a75-374046c431d0",
+      "name": "Reclamo urgente slack",
+      "webhookId": "9ae7be52-1933-4da1-ad64-82384f0b4281",
+      "credentials": {
+        "slackApi": {
+          "id": "uAylTDhv00hi1C2A",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BQ6DERRSL",
+          "mode": "id"
+        },
+        "text": "=Nuevo reclamo registrado  Unidad: {{ $('Preparar datos para IA').item.json.unidad }} Usuario: {{ $('Preparar datos para IA').item.json.nombre }} Categoría: {{ $('Parsear clasificación').item.json.categoria }} Prioridad: {{ $('Parsear clasificación').item.json.prioridad }}  Descripción: {{ $('Parsear clasificación').item.json.resumen }}  ID Reclamo: {{ $('Crear reclamo').item.json.fields.id_reclamo }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.6,
+      "position": [
+        2592,
+        640
+      ],
+      "id": "146a5342-e0ec-48e3-9b2d-7b3ea354615e",
+      "name": "Reclamo slack",
+      "webhookId": "cd318e7a-f52f-42d4-ac0f-d1c3a5bf26cb",
+      "credentials": {
+        "slackApi": {
+          "id": "uAylTDhv00hi1C2A",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "Recibimos tu reclamo y quedó registrado correctamente. Un integrante del equipo de Administración se pondrá en contacto para darle seguimiento",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2816,
+        640
+      ],
+      "id": "744899f9-9cfc-445a-90a4-7ae27ca6054b",
+      "name": "Aviso recepción",
+      "webhookId": "9595780a-638d-478d-99e6-a449e23b76d3",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "Recibimos tu reclamo y quedó registrado correctamente. Un integrante del equipo de Administración se pondrá en contacto para darle seguimiento",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3264,
+        448
+      ],
+      "id": "ef84af9c-93de-4ddd-a7de-33dc9e6f4141",
+      "name": "Aviso recepción1",
+      "webhookId": "c1e5ecac-a5cb-4837-b1ce-f7acecd6f351",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.fields.telefono }}",
+        "text": "=🚨 RECLAMO CRÍTICO  Unidad: {{ $('Preparar datos para IA').item.json.unidad }} Usuario: {{ $('Preparar datos para IA').item.json.nombre }} Categoría: {{ $('Parsear clasificación').item.json.categoria }} Prioridad: {{ $('Parsear clasificación').item.json.prioridad }}  Descripción: {{ $('Parsear clasificación').item.json.resumen }}  ID Reclamo: {{ $('Crear reclamo').item.json.fields.id_reclamo }}  ⚠️ Requiere atención prioritaria.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3040,
+        448
+      ],
+      "id": "ec862d01-3612-4e2c-85bd-129029aa33ba",
+      "name": "Aviso responsable",
+      "webhookId": "c86d2f0d-c707-4124-ad67-17d7c67038ce",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app7kEZvK4NxMj5Mc",
+          "mode": "list",
+          "cachedResultName": "Airtable.xlsx",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl47uMDl0yBLYp0M",
+          "mode": "list",
+          "cachedResultName": "Responsable",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc/tbl47uMDl0yBLYp0M"
+        },
+        "filterByFormula": "{Activo} = 'True'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2816,
+        448
+      ],
+      "id": "778b4c6e-12cb-4b32-be3f-5db9ec2614f8",
+      "name": "Contacto Responsable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "C2DlRk2g1sEJCKgL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "Para reservar el SUM necesito que me indiques fecha, hora de inicio y hora de finalización.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2368,
+        352
+      ],
+      "id": "b646c0e0-4e35-48d9-a9d4-fb17f167a137",
+      "name": "Reserva incompleta",
+      "webhookId": "22a62b28-015f-4986-b605-91de5cd2a8f2",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app7kEZvK4NxMj5Mc",
+          "mode": "list",
+          "cachedResultName": "Airtable.xlsx",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblsXW4ZAE8cCbzMF",
+          "mode": "list",
+          "cachedResultName": "Reservas",
+          "cachedResultUrl": "https://airtable.com/app7kEZvK4NxMj5Mc/tblsXW4ZAE8cCbzMF"
+        },
+        "filterByFormula": "={{ \"AND(IS_SAME({fecha}, '\" + $('Parsear clasificación').item.json.fecha_reserva + \"', 'day'), {estado} != 'Cancelada')\" }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2368,
+        160
+      ],
+      "id": "54545315-fd13-4718-9924-b6fb05e0a150",
+      "name": "Registro reservas",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "C2DlRk2g1sEJCKgL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Normalizar  Telegram').item.json.telegram_user_id }}",
+        "text": "=✅ Tu reserva del SUM fue confirmada.  Fecha:  {{ $('Clasificador').item.json.fecha_reserva }}  Horario: {{ $('Clasificador').item.json.hora_inicio }} a {{ $('Clasificador').item.json.hora_fin }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3040,
+        256
+      ],
+      "id": "886db49b-be61-4153-8997-715b3e4cbd82",
+      "name": "Confirma reserva",
+      "webhookId": "db1ee19d-dacd-4f40-9b68-decc85129721",
+      "credentials": {
+        "telegramApi": {
+          "id": "jScEZTsJRZdqHwOy",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Normalizar  Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar  Telegram": {
+      "main": [
+        [
+          {
+            "node": "Buscard ID Usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscard ID Usuario": {
+      "main": [
+        [
+          {
+            "node": "Verificar Usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener ID Unidad": {
+      "main": [
+        [
+          {
+            "node": "Preparar datos para IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar datos para IA": {
+      "main": [
+        [
+          {
+            "node": "Clasificador1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsear clasificación": {
+      "main": [
+        [
+          {
+            "node": "Clasificador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clasificador": {
+      "main": [
+        [
+          {
+            "node": "Buscar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Crear reclamo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fallback texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear reclamo": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Reclamo urgente slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reclamo slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar respuesta": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message2": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Registro reservas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reserva incompleta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Validar disponibilidad",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Confirma reserva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar disponibilidad": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Create a record1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clasificador1": {
+      "main": [
+        [
+          {
+            "node": "Parsear clasificación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log de errores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Usuario": {
+      "main": [
+        [
+          {
+            "node": "Obtener ID Unidad",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Usuario no encontrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log de errores": {
+      "main": [
+        [
+          {
+            "node": "Slack de error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack de error": {
+      "main": [
+        [
+          {
+            "node": "Mensaje sistema no disponible",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fallback texto": {
+      "main": [
+        [
+          {
+            "node": "Aviso Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reclamo urgente slack": {
+      "main": [
+        [
+          {
+            "node": "Contacto Responsable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reclamo slack": {
+      "main": [
+        [
+          {
+            "node": "Aviso recepción",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aviso responsable": {
+      "main": [
+        [
+          {
+            "node": "Aviso recepción1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contacto Responsable": {
+      "main": [
+        [
+          {
+            "node": "Aviso responsable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registro reservas": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "4b15fd3c-e689-4f62-bd79-cd3bc2eed7bc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "85b7bd4e05e2fefc9796d575ea10e9392a2e589e3a002fba44925b59291ab61a"
+  },
+  "nodeGroups": [],
+  "id": "BvlSWdoeYhf9YFv7",
+  "tags": []
+}
